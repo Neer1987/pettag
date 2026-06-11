@@ -1,0 +1,417 @@
+.pet-profile {
+  padding-bottom: 32px;
+}
+
+.finder-bar {
+  background: var(--forest);
+  color: var(--white);
+  padding: 20px;
+}
+
+.finder-bar__brand {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 24px;
+  margin: 0 0 8px;
+}
+
+.finder-bar__title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.finder-bar__sub {
+  margin: 6px 0 0;
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.lost-banner {
+  background: var(--danger);
+  color: var(--white);
+  padding: 16px 20px;
+}
+
+.lost-banner__row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.lost-banner__title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.lost-banner__sub {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.hero {
+  position: relative;
+  height: 280px;
+  background: var(--forest);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.hero__overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(15, 45, 30, 0.35);
+}
+
+.hero__emoji {
+  font-size: 96px;
+  z-index: 1;
+}
+
+.name-card {
+  margin: -52px 20px 0;
+  position: relative;
+  z-index: 2;
+  padding: 18px 20px;
+}
+
+.name-card__title {
+  margin: 0;
+  font-size: 34px;
+  line-height: 1.1;
+}
+
+.name-card__breed {
+  margin: 4px 0 12px;
+  color: var(--mid);
+}
+
+.name-card__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.gallery {
+  padding: 0 20px;
+}
+
+.gallery__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.gallery__label {
+  font-size: 11px;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--light);
+  font-weight: 600;
+}
+
+.gallery__strip {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.gallery__thumb {
+  flex: 0 0 auto;
+  width: 112px;
+}
+
+.gallery__thumb img {
+  width: 112px;
+  height: 112px;
+  object-fit: cover;
+  border-radius: 16px;
+  border: 1px solid var(--line);
+}
+
+.gallery__caption {
+  margin: 6px 0 0;
+  font-size: 11px;
+  color: var(--mid);
+  line-height: 1.35;
+}
+
+.stat-bar {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  padding: 0 20px;
+  margin-top: 18px;
+}
+
+.stat-pill {
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 12px;
+  box-shadow: var(--shadow);
+}
+
+.stat-pill__icon {
+  font-size: 16px;
+}
+
+.stat-pill__val {
+  display: block;
+  margin-top: 4px;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.stat-pill__lbl {
+  display: block;
+  margin-top: 2px;
+  font-size: 11px;
+  color: var(--light);
+}
+
+.notes-card,
+.owner-card {
+  margin: 0 20px;
+  padding: 16px 18px;
+}
+
+.notes-card p,
+.owner-card p {
+  margin: 0;
+  color: var(--mid);
+  line-height: 1.6;
+}
+
+.owner-card__row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.owner-card__avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 16px;
+  background: var(--sage-pale);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+}
+
+.owner-card__badge {
+  font-size: 9px;
+  letter-spacing: 1px;
+  color: var(--light);
+  font-weight: 600;
+}
+
+.owner-card__name {
+  margin: 2px 0;
+  font-weight: 600;
+}
+
+.owner-card__loc {
+  color: var(--mid);
+  font-size: 13px;
+}
+
+.content-block {
+  padding: 0 20px;
+}
+
+.footer-note {
+  text-align: center;
+  color: var(--light);
+  font-size: 12px;
+  margin: 28px 20px 0;
+}
+
+.download-banner {
+  margin: 0 20px;
+  padding: 18px;
+  background: linear-gradient(180deg, var(--gold-pale), var(--white));
+}
+
+.download-banner__header {
+  display: flex;
+  gap: 12px;
+}
+
+.download-banner__icon {
+  font-size: 28px;
+  line-height: 1;
+}
+
+.download-banner__title {
+  margin: 0 0 6px;
+  font-size: 24px;
+}
+
+.download-banner__sub {
+  margin: 0;
+  color: var(--mid);
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.download-banner__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.download-banner__hint {
+  margin: 14px 0 0;
+  font-size: 12px;
+  color: var(--mid);
+  line-height: 1.5;
+}
+
+.contact-form {
+  margin: 0 20px;
+  padding: 18px;
+}
+
+.contact-form__title {
+  margin: 0 0 8px;
+  font-size: 26px;
+}
+
+.contact-form__sub {
+  margin: 0 0 18px;
+  color: var(--mid);
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.finder-instructions {
+  background: var(--gold-pale);
+  border: 2px solid var(--gold);
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 20px;
+}
+
+.finder-instructions__title {
+  margin: 0 0 10px;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.finder-instructions__list {
+  margin: 0;
+  padding-left: 20px;
+  color: var(--ink2, var(--ink));
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+.finder-instructions__list li {
+  margin-bottom: 8px;
+}
+
+.finder-instructions__list strong {
+  font-weight: 700;
+  color: var(--forest);
+}
+
+.finder-instructions__footer {
+  margin: 12px 0 0;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--mid);
+}
+
+.field-required {
+  color: var(--danger);
+  font-weight: 700;
+}
+
+.location-note {
+  margin: -4px 0 16px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: var(--sage-pale);
+  color: var(--forest);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.contact-form__submit,
+.contact-form__email {
+  width: 100%;
+}
+
+.contact-form__email {
+  margin-top: 10px;
+}
+
+.not-found {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 24px;
+  text-align: center;
+}
+
+.not-found__icon {
+  font-size: 48px;
+}
+
+.not-found__title {
+  margin: 12px 0 8px;
+  font-size: 32px;
+}
+
+.not-found__sub {
+  margin: 0;
+  color: var(--mid);
+  max-width: 420px;
+  line-height: 1.6;
+}
+
+.loading-screen {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  color: var(--mid);
+}
+
+@media (min-width: 640px) {
+  .download-banner__actions {
+    flex-direction: row;
+  }
+
+  .download-banner__actions .btn {
+    flex: 1;
+  }
+
+  .stat-bar {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}

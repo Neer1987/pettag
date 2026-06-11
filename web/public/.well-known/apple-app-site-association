@@ -1,0 +1,16 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appIDs": ["TEAMID.com.yourcompany.pettag"],
+        "components": [
+          {
+            "/": "/pet/*",
+            "comment": "PetTag pet profile deep links"
+          }
+        ]
+      }
+    ]
+  }
+}

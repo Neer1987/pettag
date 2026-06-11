@@ -1,0 +1,12 @@
+{
+  "buildCommand": "npm run build --prefix web",
+  "outputDirectory": "web/dist",
+  "installCommand": "npm install --prefix web",
+  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }],
+  "headers": [
+    {
+      "source": "/.well-known/apple-app-site-association",
+      "headers": [{ "key": "Content-Type", "value": "application/json" }]
+    }
+  ]
+}

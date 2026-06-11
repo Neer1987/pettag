@@ -1,0 +1,15 @@
+# Local Supabase CLI config (optional — use hosted project + SQL migrations for MVP)
+
+project_id = "pettag"
+
+[api]
+enabled = true
+port = 54321
+
+[db]
+port = 54322
+major_version = 15
+
+[storage]
+enabled = true
+file_size_limit = "50MiB"

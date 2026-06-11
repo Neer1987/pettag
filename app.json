@@ -9,7 +9,8 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "associatedDomains": ["applinks:pettag.app"]
     },
     "android": {
       "adaptiveIcon": {
@@ -19,7 +20,22 @@
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "softwareKeyboardLayoutMode": "resize",
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "autoVerify": true,
+          "data": [
+            {
+              "scheme": "https",
+              "host": "pettag.app",
+              "pathPrefix": "/pet"
+            }
+          ],
+          "category": ["BROWSABLE", "DEFAULT"]
+        }
+      ]
     },
     "web": {
       "output": "static",
@@ -28,14 +44,47 @@
     "plugins": [
       "expo-router",
       [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "PetTag uses your location to alert nearby users when a pet is lost and to show pets missing near you.",
+          "locationWhenInUsePermission": "PetTag uses your location to alert nearby users when a pet is lost and to show pets missing near you."
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/images/icon.png",
+          "color": "#0F2D1E",
+          "enableBackgroundRemoteNotifications": true,
+          "sounds": [
+            "./assets/sounds/lost_pet_alert.wav",
+            "./assets/sounds/inbox_message.wav"
+          ]
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "PetTag needs access to your photos so you can add pictures of your pet.",
+          "cameraPermission": "PetTag needs camera access so you can take photos of your pet."
+        }
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "PetTag needs camera access to scan pet QR tags when you find a lost pet.",
+          "recordAudioAndroid": false
+        }
+      ],
+      [
         "expo-splash-screen",
         {
           "image": "./assets/images/splash-icon.png",
           "imageWidth": 200,
           "resizeMode": "contain",
-          "backgroundColor": "#ffffff",
+          "backgroundColor": "#0F2D1E",
           "dark": {
-            "backgroundColor": "#000000"
+            "backgroundColor": "#0F2D1E"
           }
         }
       ]

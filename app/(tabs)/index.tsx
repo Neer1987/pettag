@@ -1,98 +1,362 @@
 import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import { router } from 'expo-router';
+import { StatusBar } from 'expo-status-bar';
+import { useCallback, useState } from 'react';
+import { Pressable, RefreshControl, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { HelloWave } from '@/components/hello-wave';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { Link } from 'expo-router';
+import { SectionLabel } from '@/components/ui/section-label';
+import { ScanPetTagButton } from '@/components/scan-pet-tag-button';
+import { Colors, Fonts, Shadows } from '@/constants/theme';
+import { useUser } from '@/contexts/user-context';
+import { useAppRefresh } from '@/hooks/use-app-refresh';
+import { speciesEmoji } from '@/lib/pet-media';
+
+const FALLBACK_HERO = require('@/assets/images/landing-pet.jpg');
 
 export default function HomeScreen() {
-  return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <Link href="/modal">
-          <Link.Trigger>
-            <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-          </Link.Trigger>
-          <Link.Preview />
-          <Link.Menu>
-            <Link.MenuAction title="Action" icon="cube" onPress={() => alert('Action pressed')} />
-            <Link.MenuAction
-              title="Share"
-              icon="square.and.arrow.up"
-              onPress={() => alert('Share pressed')}
-            />
-            <Link.Menu title="More" icon="ellipsis">
-              <Link.MenuAction
-                title="Delete"
-                icon="trash"
-                destructive
-                onPress={() => alert('Delete pressed')}
-              />
-            </Link.Menu>
-          </Link.Menu>
-        </Link>
+  const insets = useSafeAreaInsets();
+  const { owner, pet, pets, activePetQrCodeId, selectPet, isLoggedIn } = useUser();
+  const { refreshAll } = useAppRefresh();
+  const [refreshing, setRefreshing] = useState(false);
 
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+  const handleRefresh = useCallback(async () => {
+    setRefreshing(true);
+    try {
+      await refreshAll();
+    } finally {
+      setRefreshing(false);
+    }
+  }, [refreshAll]);
+
+  const firstName = owner?.fullName.split(' ')[0];
+  const coverUri = pet?.coverPhotoUri ?? pet?.media.find((m) => m.type === 'photo')?.uri ?? null;
+  const photoCount = pet?.media.filter((m) => m.type === 'photo').length ?? 0;
+  const lostCount = pets.filter((p) => p.isLost).length;
+
+  const openPetProfile = (qrCodeId: string) => {
+    selectPet(qrCodeId);
+    router.push('/(tabs)/pets');
+  };
+
+  return (
+    <View style={styles.container}>
+      <StatusBar style="dark" />
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={() => void handleRefresh()} tintColor={Colors.forest} />
+        }
+        contentContainerStyle={[styles.scroll, { paddingTop: insets.top + 16, paddingBottom: insets.bottom + 24 }]}>
+        <Text style={styles.brand}>PetTag</Text>
+
+        {!isLoggedIn || pets.length === 0 ? (
+          <View style={styles.emptyBlock}>
+            <View style={styles.heroImageWrap}>
+              <Image source={FALLBACK_HERO} style={styles.heroImage} contentFit="cover" transition={300} />
+            </View>
+            <Text style={styles.greetName}>Welcome to PetTag</Text>
+            <Text style={styles.greetSub}>Create your pet profile to get started.</Text>
+            <Pressable style={styles.primaryBtn} onPress={() => router.push('/signup')}>
+              <Text style={styles.primaryBtnText}>Sign up</Text>
+            </Pressable>
+            <Pressable style={styles.secondaryBtn} onPress={() => router.push('/login')}>
+              <Text style={styles.secondaryBtnText}>Log in</Text>
+            </Pressable>
+          </View>
+        ) : (
+          <>
+            <Pressable
+              style={styles.heroImageWrap}
+              onPress={() => pet && openPetProfile(pet.qrCodeId)}>
+              {coverUri ? (
+                <Image source={{ uri: coverUri }} style={styles.heroImage} contentFit="cover" transition={300} />
+              ) : (
+                <View style={styles.heroFallback}>
+                  <Text style={styles.heroEmoji}>{speciesEmoji(pet?.species ?? 'Dog')}</Text>
+                </View>
+              )}
+              <View style={styles.heroOverlay}>
+                <Text style={styles.heroPetName}>{pet?.name}</Text>
+                <Text style={styles.heroPetMeta}>
+                  {[pet?.breed, pet?.age].filter(Boolean).join(' · ')}
+                </Text>
+              </View>
+            </Pressable>
+
+            <View style={styles.greetBlock}>
+              <Text style={styles.greetName}>Hey, {firstName}</Text>
+              <Text style={styles.greetSub}>
+                {pets.length > 1
+                  ? `You have ${pets.length} pets${lostCount > 0 ? ` · ${lostCount} alert${lostCount === 1 ? '' : 's'} active` : ''}`
+                  : pet?.isLost
+                    ? `${pet.name} is being searched — alert is active`
+                    : `${pet?.name} is safe today · ${photoCount} photo${photoCount === 1 ? '' : 's'}`}
+              </Text>
+            </View>
+
+            <View style={styles.scanCardWrap}>
+              <ScanPetTagButton />
+            </View>
+
+            <SectionLabel label="My Pets" style={styles.sectionLabel} />
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.petsRow}>
+              {pets.map((p) => {
+                const thumb = p.coverPhotoUri ?? p.media.find((m) => m.type === 'photo')?.uri ?? null;
+                const selected = p.qrCodeId === activePetQrCodeId;
+                return (
+                  <Pressable
+                    key={p.qrCodeId}
+                    style={[styles.petCard, selected && styles.petCardSelected]}
+                    onPress={() => openPetProfile(p.qrCodeId)}>
+                    <View style={styles.petThumb}>
+                      {thumb ? (
+                        <Image source={{ uri: thumb }} style={styles.petThumbImage} contentFit="cover" />
+                      ) : (
+                        <View style={styles.petThumbFallback}>
+                          <Text style={styles.petThumbEmoji}>{speciesEmoji(p.species)}</Text>
+                        </View>
+                      )}
+                    </View>
+                    <Text style={styles.petName}>{p.name}</Text>
+                    <Text style={styles.petBreed}>{p.breed || p.species}</Text>
+                    <View style={styles.statusRow}>
+                      <View style={[styles.statusDot, p.isLost ? styles.lostDot : styles.safeDot]} />
+                      <Text style={[styles.statusText, p.isLost ? styles.lostText : styles.safeText]}>
+                        {p.isLost ? 'Searching' : 'Safe'}
+                      </Text>
+                    </View>
+                  </Pressable>
+                );
+              })}
+
+              <Pressable style={styles.addPetCard} onPress={() => router.push('/add-pet')}>
+                <Text style={styles.addPlus}>＋</Text>
+                <Text style={styles.addLabel}>Add pet</Text>
+              </Pressable>
+            </ScrollView>
+
+            {pet ? (
+              <Pressable style={styles.profileLink} onPress={() => openPetProfile(pet.qrCodeId)}>
+                <Text style={styles.profileLinkText}>View {pet.name}&apos;s full profile →</Text>
+              </Pressable>
+            ) : null}
+          </>
+        )}
+      </ScrollView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
+  container: {
+    flex: 1,
+    backgroundColor: Colors.cream,
   },
-  stepContainer: {
-    gap: 8,
+  scroll: {
+    paddingHorizontal: 20,
+  },
+  brand: {
+    fontFamily: Fonts.serif,
+    fontSize: 22,
+    color: Colors.forest,
+    letterSpacing: 0.3,
+    marginBottom: 20,
+  },
+  emptyBlock: {
+    alignItems: 'stretch',
+  },
+  heroImageWrap: {
+    width: '100%',
+    height: 220,
+    borderRadius: 24,
+    overflow: 'hidden',
+    marginBottom: 24,
+  },
+  heroImage: {
+    width: '100%',
+    height: '100%',
+  },
+  heroFallback: {
+    flex: 1,
+    backgroundColor: Colors.forest,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  heroEmoji: {
+    fontSize: 72,
+  },
+  heroOverlay: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    paddingHorizontal: 18,
+    paddingVertical: 16,
+    backgroundColor: 'rgba(15,45,30,0.55)',
+  },
+  heroPetName: {
+    fontFamily: Fonts.serifItalic,
+    fontSize: 26,
+    color: Colors.white,
+  },
+  heroPetMeta: {
+    fontFamily: Fonts.sans,
+    fontSize: 12,
+    color: 'rgba(255,255,255,0.75)',
+    marginTop: 2,
+  },
+  greetBlock: {
     marginBottom: 8,
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+  scanCardWrap: {
+    marginBottom: 18,
+  },
+  greetName: {
+    fontFamily: Fonts.serifItalic,
+    fontSize: 28,
+    color: Colors.ink,
+  },
+  greetSub: {
+    fontFamily: Fonts.sans,
+    fontSize: 14,
+    color: Colors.mid,
+    marginTop: 4,
+  },
+  primaryBtn: {
+    marginTop: 20,
+    backgroundColor: Colors.forest,
+    borderRadius: 14,
+    paddingVertical: 14,
+    alignItems: 'center',
+  },
+  primaryBtnText: {
+    fontFamily: Fonts.sansSemiBold,
+    fontSize: 14,
+    color: Colors.white,
+  },
+  secondaryBtn: {
+    marginTop: 10,
+    paddingVertical: 12,
+    alignItems: 'center',
+  },
+  secondaryBtnText: {
+    fontFamily: Fonts.sansMedium,
+    fontSize: 14,
+    color: Colors.forest,
+  },
+  sectionLabel: {
+    paddingHorizontal: 0,
+    paddingTop: 12,
+  },
+  petsRow: {
+    gap: 12,
+    paddingRight: 4,
+  },
+  petCard: {
+    width: 140,
+    backgroundColor: Colors.white,
+    borderRadius: 20,
+    padding: 14,
+    borderWidth: 1.5,
+    borderColor: 'transparent',
+    ...Shadows.card,
+  },
+  petCardSelected: {
+    borderColor: Colors.forest,
+  },
+  petThumb: {
+    width: '100%',
+    height: 88,
+    borderRadius: 14,
+    overflow: 'hidden',
+    marginBottom: 10,
+    backgroundColor: Colors.cream2,
+  },
+  petThumbImage: {
+    width: '100%',
+    height: '100%',
+  },
+  petThumbFallback: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: Colors.sagePale,
+  },
+  petThumbEmoji: {
+    fontSize: 36,
+  },
+  petName: {
+    fontFamily: Fonts.serifItalic,
+    fontSize: 17,
+    color: Colors.ink,
+    textAlign: 'center',
+  },
+  petBreed: {
+    fontFamily: Fonts.sans,
+    fontSize: 10,
+    color: Colors.light,
+    textAlign: 'center',
+    marginTop: 2,
+  },
+  statusRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 5,
+    marginTop: 8,
+  },
+  statusDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+  },
+  safeDot: {
+    backgroundColor: Colors.success,
+  },
+  lostDot: {
+    backgroundColor: Colors.danger,
+  },
+  statusText: {
+    fontFamily: Fonts.sansMedium,
+    fontSize: 10,
+  },
+  safeText: {
+    color: Colors.success,
+  },
+  lostText: {
+    color: Colors.danger,
+  },
+  addPetCard: {
+    width: 100,
+    backgroundColor: Colors.white,
+    borderRadius: 20,
+    padding: 14,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1.5,
+    borderStyle: 'dashed',
+    borderColor: Colors.line,
+    gap: 8,
+  },
+  addPlus: {
+    fontSize: 24,
+    color: Colors.mid,
+  },
+  addLabel: {
+    fontFamily: Fonts.sansMedium,
+    fontSize: 11,
+    color: Colors.mid,
+    textAlign: 'center',
+  },
+  profileLink: {
+    marginTop: 18,
+    paddingVertical: 12,
+    alignItems: 'center',
+  },
+  profileLinkText: {
+    fontFamily: Fonts.sansSemiBold,
+    fontSize: 13,
+    color: Colors.forest,
   },
 });
