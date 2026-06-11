@@ -59,10 +59,11 @@ function petRowToProfile(row: PetRow): PetProfile {
 
 export async function fetchPublicProfileByQrCode(qrCodeId: string): Promise<PublicProfile | null> {
   const supabase = getSupabase();
+  const normalized = qrCodeId.trim().toLowerCase();
   const { data, error } = await supabase
     .from('pets')
     .select('*, owners(*)')
-    .eq('qr_code_id', qrCodeId.trim().toLowerCase())
+    .or(`qr_code_id.eq.${normalized},profile_slug.eq.${normalized}`)
     .maybeSingle();
 
   if (error) throw error;

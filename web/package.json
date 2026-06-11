@@ -10,11 +10,16 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.108.1",
+    "pettag": "file:..",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-router-dom": "^7.6.2"
   },
+  "engines": {
+    "node": ">=20"
+  },
   "devDependencies": {
+    "@types/node": "^22.15.30",
     "@types/react": "^19.1.0",
     "@types/react-dom": "^19.1.0",
     "@vitejs/plugin-react": "^4.5.2",
