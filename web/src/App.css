@@ -187,9 +187,53 @@
 }
 
 .notes-card,
+.medical-card,
 .owner-card {
   margin: 0 20px;
   padding: 16px 18px;
+}
+
+.medical-card {
+  display: grid;
+  gap: 14px;
+}
+
+.medical-block__title {
+  margin: 0 0 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.medical-block__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.medical-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: var(--sage-pale);
+  border: 1px solid #cfe3d6;
+  color: var(--forest);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.medical-chip--allergy {
+  color: var(--danger);
+  background: #fdecea;
+  border-color: #f5c6c1;
+}
+
+.medical-block__notes {
+  margin: 0;
+  color: var(--mid);
+  line-height: 1.6;
+  font-size: 13px;
 }
 
 .notes-card p,

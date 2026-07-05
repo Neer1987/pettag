@@ -1,6 +1,8 @@
 import { ContactOwnerForm } from '@/components/ContactOwnerForm';
 import { DownloadAppBanner } from '@/components/DownloadAppBanner';
+import { MedicalRecordsSection } from '@/components/MedicalRecordsSection';
 import type { PublicProfile } from '@/lib/types';
+import { sanitizePetMedicalDisplay } from '@/lib/pet-medical';
 import { displayWeight, speciesEmoji } from '@/lib/utils';
 
 type PetProfileViewProps = {
@@ -12,6 +14,11 @@ export function PetProfileView({ profile }: PetProfileViewProps) {
   const photos = pet.media.filter((item) => item.type === 'photo');
   const microchipLabel = pet.microchip.trim() ? pet.microchip : 'Not registered';
   const ownerLocation = [owner.city, owner.state].filter(Boolean).join(', ') || owner.address;
+  const medical = sanitizePetMedicalDisplay({
+    notes: pet.notes,
+    vaccinations: pet.vaccinations,
+    allergies: pet.allergies,
+  });
 
   return (
     <article className="pet-profile container">
@@ -102,14 +109,7 @@ export function PetProfileView({ profile }: PetProfileViewProps) {
         ))}
       </div>
 
-      {pet.notes.trim() ? (
-        <>
-          <p className="section-label content-block">Notes for finder or vet</p>
-          <section className="card notes-card">
-            <p>{pet.notes}</p>
-          </section>
-        </>
-      ) : null}
+      <MedicalRecordsSection medical={medical} />
 
       <p className="section-label content-block">Pet parent</p>
       <section className="card owner-card">
