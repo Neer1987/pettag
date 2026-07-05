@@ -26,6 +26,8 @@ export type PetProfile = {
   markings: string[];
   microchip: string;
   notes: string;
+  vaccinations: string[];
+  allergies: string[];
   coverPhotoUri: string | null;
   media: PetMediaItem[];
   qrCodeId: string;
@@ -66,6 +68,8 @@ export type PetRow = {
   markings: string[];
   microchip: string;
   notes: string;
+  vaccinations?: string[] | null;
+  allergies?: string[] | null;
   cover_photo_uri: string | null;
   media: PetMediaItem[] | string | null;
   qr_design_id: string;

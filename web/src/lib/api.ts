@@ -1,4 +1,5 @@
 import type { OwnerProfile, PetMediaItem, PetProfile, PublicProfile, OwnerRow, PetRow } from '@/lib/types';
+import { mergeMedicalFields } from '@/lib/pet-medical';
 import { getSupabase } from '@/lib/supabase';
 
 function normalizeMedia(raw: PetRow['media']): PetMediaItem[] {
@@ -37,6 +38,12 @@ function ownerRowToProfile(row: OwnerRow): OwnerProfile {
 }
 
 function petRowToProfile(row: PetRow): PetProfile {
+  const medical = mergeMedicalFields({
+    notes: row.notes,
+    vaccinations: row.vaccinations,
+    allergies: row.allergies,
+  });
+
   return {
     name: row.name,
     species: row.species,
@@ -47,7 +54,9 @@ function petRowToProfile(row: PetRow): PetProfile {
     weight: row.weight,
     markings: row.markings ?? [],
     microchip: row.microchip,
-    notes: row.notes,
+    notes: medical.notes,
+    vaccinations: medical.vaccinations,
+    allergies: medical.allergies,
     coverPhotoUri: row.cover_photo_uri || null,
     media: normalizeMedia(row.media),
     qrCodeId: row.qr_code_id,
